@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Construction Materials Calculator</title>
+    <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+    <div class="container">
+        <div class="admin-login">
+            <button id="adminLoginBtn">Admin Login</button>
+        </div>
+        
+        <h1>House Construction Materials Calculator</h1>
+        <p>Calculate materials required to build a house on a 30×40 site (1200 sq. ft plot area)</p>
+        
+        <div class="form-group">
+            <label for="buildingArea">How many square feet do you want to build?</label>
+            <input type="number" id="buildingArea" placeholder="Enter square feet (max 6000 for 5 floors)" min="100" max="6000">
+        </div>
+        
+        <div class="form-group">
+            <label for="floors">Number of Floors:</label>
+            <select id="floors">
+                <option value="1">1 Floor</option>
+                <option value="2">2 Floors</option>
+                <option value="3">3 Floors</option>
+                <option value="4">4 Floors</option>
+                <option value="5">5 Floors</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="parkingArea">Parking Area (sq. ft):</label>
+            <input type="number" id="parkingArea" placeholder="Enter parking area (optional)" min="0" max="400">
+        </div>
+        
+        <button id="calculateBtn">Calculate Materials</button>
+        
+        <div id="results" class="hidden result-section">
+            <h2>Materials Estimation Results</h2>
+            
+            <div class="tab">
+                <button class="tablinks active" id="defaultTab">Materials</button>
+                <button class="tablinks">Cost Breakdown</button>
+                <button class="tablinks">Summary</button>
+            </div>
+            
+            <div id="materialsTab" class="tabcontent" style="display: block;">
+                <h3>Required Materials</h3>
+                <table id="materialsTable">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be filled by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="priceTab" class="tabcontent">
+                <h3>Cost Breakdown</h3>
+                <table id="priceTable">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Low Range (₹)</th>
+                            <th>Mid Range (₹)</th>
+                            <th>High Range (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be filled by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="summaryTab" class="tabcontent">
+                <h3>Cost Summary</h3>
+                <div id="buildingSummary"></div>
+                
+                <div class="price-range">
+                    <div class="price-card low-range">
+                        <h3>Economy Range</h3>
+                        <div class="total-price" id="lowRangeTotal">₹0</div>
+                        <p>Basic finishes and standard materials</p>
+                    </div>
+                    
+                    <div class="price-card mid-range">
+                        <h3>Standard Range</h3>
+                        <div class="total-price" id="midRangeTotal">₹0</div>
+                        <p>Better quality materials and finishes</p>
+                    </div>
+                    
+                    <div class="price-card high-range">
+                        <h3>Premium Range</h3>
+                        <div class="total-price" id="highRangeTotal">₹0</div>
+                        <p>High-end materials and luxury finishes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="admin-panel">
+            <h2>Admin Panel</h2>
+            <div id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminPassword">Admin Password:</label>
+                    <input type="password" id="adminPassword">
+                    <button id="adminLoginConfirm">Login</button>
+                </div>
+            </div>
+            
+            <div id="adminContent" class="hidden">
+                <div class="admin-tabs">
+                    <div class="admin-tab active" data-tab="editPrices">Edit Prices</div>
+                    <div class="admin-tab" data-tab="manageMaterials">Manage Materials</div>
+                </div>
+                
+                <!-- Edit Prices Tab -->
+                <div class="admin-tab-content active" id="editPrices">
+                    <h3>Edit Material Prices</h3>
+                    <table id="adminMaterialTable">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Unit</th>
+                                <th>Low Range Price (₹)</th>
+                                <th>Mid Range Price (₹)</th>
+                                <th>High Range Price (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Will be filled by JavaScript -->
+                        </tbody>
+                    </table>
+                    <button id="savePriceChanges" class="green-btn">Save Price Changes</button>
+                </div>
+                
+                <!-- Manage Materials Tab -->
+                <div class="admin-tab-content" id="manageMaterials">
+                    <h3>Add New Material</h3>
+                    <div class="new-material-form">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="newMaterialName">Material Name:</label>
+                                <input type="text" id="newMaterialName" placeholder="Enter material name">
+                            </div>
+                            <div class="form-col">
+                                <label for="newMaterialUnit">Unit:</label>
+                                <input type="text" id="newMaterialUnit" placeholder="e.g., Kg, Meters, Bags">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="newMaterialLowPrice">Low Range Price (₹):</label>
+                                <input type="number" id="newMaterialLowPrice" min="0" placeholder="Economy price">
+                            </div>
+                            <div class="form-col">
+                                <label for="newMaterialMidPrice">Mid Range Price (₹):</label>
+                                <input type="number" id="newMaterialMidPrice" min="0" placeholder="Standard price">
+                            </div>
+                            <div class="form-col">
+                                <label for="newMaterialHighPrice">High Range Price (₹):</label>
+                                <input type="number" id="newMaterialHighPrice" min="0" placeholder="Premium price">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="newMaterialFactor">Calculation Factor:</label>
+                                <input type="number" id="newMaterialFactor" min="0" step="0.01" placeholder="Quantity per sq ft (e.g., 0.4)">
+                            </div>
+                            <div class="form-col">
+                                <label for="newMaterialScaleWithFloors">Scale with Floors:</label>
+                                <select id="newMaterialScaleWithFloors">
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button id="addNewMaterial" class="green-btn">Add Material</button>
+                    </div>
+                    
+                    <h3>Manage Existing Materials</h3>
+                    <table id="manageMaterialsTable">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Unit</th>
+                                <th>Calculation Factor</th>
+                                <th>Scale with Floors</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Will be filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button id="logoutBtn" class="red-btn" style="margin-top: 20px;">Logout</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
